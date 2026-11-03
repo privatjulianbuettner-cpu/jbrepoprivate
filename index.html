@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FG SSD Portal</title>
+    <meta
+      name="description"
+      content="Professionelles Portal für den Schulsanitätsdienst des FG."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Hauptnavigation">
+        <div class="brand-wrap">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <div>
+            <p class="eyebrow">Schulsanitätsdienst</p>
+            <h1>FG SSD</h1>
+          </div>
+        </div>
+
+        <div class="role-card">
+          <label for="roleSelector">Rolle</label>
+          <select id="roleSelector" aria-label="Benutzerrolle auswählen">
+            <option value="member">SSD-Mitglied</option>
+            <option value="kursleitung">SSD-Kursleitung</option>
+            <option value="sekretariat">Sekretariat</option>
+          </select>
+        </div>
+
+        <nav class="main-nav" aria-label="Portal-Navigation">
+          <button class="nav-link active" data-target="dashboard-section">Übersicht</button>
+          <button class="nav-link" data-target="absence-section">Abwesenheiten</button>
+          <button class="nav-link" data-target="schedule-section">Dienstplan</button>
+          <button class="nav-link" data-target="incident-section">Meldungen</button>
+          <button class="nav-link" data-target="material-section">Material</button>
+          <button class="nav-link" data-target="messages-section">Mitteilungen</button>
+        </nav>
+
+        <div class="system-note">
+          <span class="dot"></span>
+          <span>Systemstatus: Betriebsbereit</span>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow muted">Anmeldung</p>
+            <h2 id="userName">Mara Schneider</h2>
+          </div>
+          <div class="topbar-actions">
+            <div id="roleBadge" class="role-badge">SSD-Mitglied</div>
+            <div class="notification-pill">
+              <span>Benachrichtigungen</span>
+              <strong id="notificationCount">3</strong>
+            </div>
+          </div>
+        </header>
+
+        <section id="dashboard-section" class="panel active">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Dashboard</p>
+              <h3>Persönliche Übersicht</h3>
+            </div>
+            <div id="dashboardHint" class="section-meta">Rolle: SSD-Mitglied</div>
+          </div>
+
+          <div class="stats-grid" id="statsGrid"></div>
+
+          <div class="content-grid two-col">
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Anstehende Dienste</h4>
+                <span class="badge neutral">Woche</span>
+              </div>
+              <ul id="upcomingServices" class="list"></ul>
+            </div>
+
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Relevante Benachrichtigungen</h4>
+                <span class="badge alert">Live</span>
+              </div>
+              <ul id="notificationList" class="list"></ul>
+            </div>
+          </div>
+
+          <div class="content-grid two-col">
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Offene Abwesenheiten</h4>
+                <span class="badge warn">Prüfung</span>
+              </div>
+              <ul id="absenceSummary" class="list"></ul>
+            </div>
+
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Aktuelle Mitteilungen</h4>
+                <span class="badge success">Interne</span>
+              </div>
+              <ul id="messageSummary" class="list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="absence-section" class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Verwaltung</p>
+              <h3>Abwesenheit melden</h3>
+            </div>
+            <div id="absenceMeta" class="section-meta">Mitgliedsmeldung</div>
+          </div>
+
+          <div class="two-col form-grid">
+            <form id="absenceForm" class="panel-card form-card">
+              <div class="field-row">
+                <label>
+                  <span>Beginn</span>
+                  <input type="date" name="startDate" required />
+                </label>
+                <label>
+                  <span>Ende</span>
+                  <input type="date" name="endDate" required />
+                </label>
+              </div>
+
+              <label>
+                <span>Betroffener Dienst</span>
+                <select name="service" required>
+                  <option value="">Bitte wählen</option>
+                  <option value="Wachdienst 1">Wachdienst 1</option>
+                  <option value="Ersteinsatzbetreuung">Ersteinsatzbetreuung</option>
+                  <option value="Sicherungsdienst">Sicherungsdienst</option>
+                  <option value="Materialkontrolle">Materialkontrolle</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Organisatorische Mitteilung</span>
+                <textarea name="note" rows="4" placeholder="Optional ..."></textarea>
+              </label>
+
+              <div class="form-actions">
+                <button type="submit" class="primary-btn">Meldung einreichen</button>
+              </div>
+            </form>
+
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Liste der Abwesenheiten</h4>
+                <span class="badge neutral">Status</span>
+              </div>
+              <div id="absenceTable" class="table-box"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="schedule-section" class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Planung</p>
+              <h3>Dienstplan</h3>
+            </div>
+            <div id="scheduleMeta" class="section-meta">Verfügbarkeiten und Vertretungen</div>
+          </div>
+
+          <div class="content-grid two-col">
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Wochenübersicht</h4>
+                <span class="badge neutral">Monatlich</span>
+              </div>
+              <div id="scheduleTable" class="table-box"></div>
+            </div>
+
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Vertretungen & Tausch</h4>
+                <span class="badge warn">Freigaben</span>
+              </div>
+              <ul id="swapList" class="list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="incident-section" class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Alarmierung</p>
+              <h3>SSD-Unterstützung anfordern</h3>
+            </div>
+            <div class="warning-inline">
+              Kein Ersatz für den Notruf 112. Nur interne Vorteile prüfen.
+            </div>
+          </div>
+
+          <div class="two-col form-grid">
+            <form id="incidentForm" class="panel-card form-card">
+              <div class="field-row">
+                <label>
+                  <span>Gebäude</span>
+                  <input type="text" name="building" placeholder="Aula / Hauptgebäude" required />
+                </label>
+                <label>
+                  <span>Gebäudeteil</span>
+                  <input type="text" name="section" placeholder="EG / 1. OG" />
+                </label>
+              </div>
+
+              <div class="field-row">
+                <label>
+                  <span>Stockwerk</span>
+                  <input type="text" name="floor" placeholder="2" />
+                </label>
+                <label>
+                  <span>Raum</span>
+                  <input type="text" name="room" placeholder="R 204" />
+                </label>
+              </div>
+
+              <div class="field-row">
+                <label>
+                  <span>Treffpunkt</span>
+                  <input type="text" name="meetingPoint" placeholder="Haupteingang" />
+                </label>
+                <label>
+                  <span>Zeitpunkt</span>
+                  <input type="datetime-local" name="datetime" required />
+                </label>
+              </div>
+
+              <label>
+                <span>Art der Unterstützung</span>
+                <select name="type" required>
+                  <option value="">Bitte wählen</option>
+                  <option value="Erste Hilfe">Erste Hilfe</option>
+                  <option value="Begleitservice">Begleitservice</option>
+                  <option value="Materialbereitstellung">Materialbereitstellung</option>
+                  <option value="Verstärkung">Verstärkung</option>
+                </select>
+              </label>
+
+              <label>
+                <span>Orientierung / Freitext</span>
+                <textarea name="orientation" rows="3" placeholder="Weitere Hinweise für die Einsatzgruppe"></textarea>
+              </label>
+
+              <div class="form-actions">
+                <button type="submit" class="primary-btn">Meldung senden</button>
+              </div>
+            </form>
+
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Aktuelle Meldungen</h4>
+                <span class="badge neutral">Live</span>
+              </div>
+              <div id="incidentTable" class="table-box"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="material-section" class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Material</p>
+              <h3>Bestand und Sichtkontrolle</h3>
+            </div>
+            <div id="materialMeta" class="section-meta">Kontrollen und Lagerverwaltung</div>
+          </div>
+
+          <div class="two-col form-grid">
+            <form id="materialForm" class="panel-card form-card">
+              <label>
+                <span>Material</span>
+                <input type="text" name="name" placeholder="Verbandsmaterial / Taschenlampe" required />
+              </label>
+              <div class="field-row">
+                <label>
+                  <span>Standort</span>
+                  <input type="text" name="location" placeholder="Kiste 3 / Lager" required />
+                </label>
+                <label>
+                  <span>Bestand</span>
+                  <input type="number" name="stock" min="0" value="0" required />
+                </label>
+              </div>
+              <label>
+                <span>Kontrolldatum</span>
+                <input type="date" name="checkDate" required />
+              </label>
+              <div class="form-actions">
+                <button type="submit" class="primary-btn">Bestand erfassen</button>
+              </div>
+            </form>
+
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Materialstatus</h4>
+                <span class="badge success">Kontrollen</span>
+              </div>
+              <div id="materialTable" class="table-box"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="messages-section" class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Kommunikation</p>
+              <h3>Mitteilungen & Rundmeldungen</h3>
+            </div>
+            <div id="messageMeta" class="section-meta">Rundschreiben und interne Kommunikation</div>
+          </div>
+
+          <div class="content-grid two-col">
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Aktuelle Nachrichten</h4>
+                <span class="badge neutral">Lesebestätigung</span>
+              </div>
+              <ul id="messageList" class="list"></ul>
+            </div>
+
+            <div class="panel-card compact">
+              <div class="card-header">
+                <h4>Verlauf</h4>
+                <span class="badge success">Archiv</span>
+              </div>
+              <ul id="archiveList" class="list"></ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
